@@ -1,10 +1,10 @@
 from flask import Blueprint, make_response, redirect, request
 from time import time
 
-from sql.mysql import db
-from sql.model import t_url, t_log, t_user
-
-# from api.response import response
+from sql.model import db
+from sql.tables.t_url import t_url
+from sql.tables.t_log import t_log
+from sql.tables.t_user import t_user
 
 main = Blueprint('main', __name__)
 

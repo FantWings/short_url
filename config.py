@@ -11,7 +11,7 @@ class Config(object):
     """
     # 从config.json读取数据库配置
     config = json.load(open('config.json'))
-    if config.get('use_sql'):
+    if config.get('use_mysql'):
         # 拼接SQL URI
         database_uri = "mysql://%s:%s@%s:%s/%s" % (
             config['sql_username'],
@@ -26,7 +26,7 @@ class Config(object):
 
     # SQLALCHEMY配置
     SQLALCHEMY_DATABASE_URI = database_uri or 'sqlite:///' + os.path.join(
-                                               base_dir, 'sqlite.db')
+        base_dir, 'sqlite.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # 禁用ASCII编码

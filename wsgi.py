@@ -2,15 +2,22 @@ from flask import Flask
 from flask_cors import CORS
 
 from config import Config
-from sql.mysql import db
-from api.main import main
+from sql.model import db
+from routes.main import main
+from routes.api import api
+from routes.auth import auth
 
 app = Flask(__name__)
 app.config.from_object(Config)
-db.init_app(app)
+
+with app.app_context():
+    db.init_app(app)
+    db.create_all()
 
 CORS(app)
 app.register_blueprint(blueprint=main, url_prefix='/')
+app.register_blueprint(blueprint=api, url_prefix='/api')
+app.register_blueprint(blueprint=auth, url_prefix='/auth')
 
 if __name__ == "__main__":
     app.run()
