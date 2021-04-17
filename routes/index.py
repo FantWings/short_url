@@ -13,9 +13,7 @@ index = Blueprint('index', __name__)
 
 @index.route('/<params>', methods=['GET'])
 def url_router(params):
-    print(request.headers)
     results = t_url.query.filter_by(short_url=params).first()
-
     if results is None:
         return make_response("链接不存在！", 200)
     else:
@@ -36,7 +34,6 @@ def url_router(params):
                 referer=request.headers.get('Referer'),
             )
         )
-
         access(request.remote_addr, params, results.original_url, vip)
         db.session.commit()
         return make_response(redirect(results.original_url), 302)
