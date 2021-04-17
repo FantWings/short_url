@@ -29,7 +29,8 @@ def url_router(params):
         db.session.add(
             t_log(
                 url_id=params,
-                ip_addr=request.remote_addr,
+                ip_addr=request.headers.get(
+                    'X-Forwarded-For') or request.remote_addr,
                 ua=request.headers.get('User-Agent'),
                 referer=request.headers.get('Referer'),
             )

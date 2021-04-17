@@ -15,4 +15,4 @@ ENV SQL_MODE "sqlite" \
 
 EXPOSE 9090
 
-ENTRYPOINT [ "uwsgi", "-w", "wsgi:app", "--uid", "1000", "--http", ":9090" ]
+ENTRYPOINT [ "uwsgi", "-w", "wsgi:app", "--uid", "1000", "--http", ":9090","--master", "--workers", "3"]
