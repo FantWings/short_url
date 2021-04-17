@@ -1,5 +1,5 @@
 from sql.model import db
-from datetime import datetime
+from sqlalchemy.sql import func
 
 
 class t_url(db.Model):
@@ -18,7 +18,7 @@ class t_url(db.Model):
     create_time = db.Column(
         db.DateTime,
         nullable=False,
-        default=datetime.now,
+        default=func.now(),
         comment='创建时间'
     )
     status = db.Column(

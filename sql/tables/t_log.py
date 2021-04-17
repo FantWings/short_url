@@ -1,5 +1,5 @@
 from sql.model import db
-from datetime import datetime
+from sqlalchemy.sql import func
 
 
 class t_log(db.Model):
@@ -27,6 +27,6 @@ class t_log(db.Model):
     time = db.Column(
         db.DateTime,
         nullable=False,
-        default=datetime.now,
+        default=func.now(),
         comment='访问时间'
     )

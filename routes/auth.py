@@ -1,9 +1,11 @@
-from flask import Blueprint, make_response, session
+from flask import Blueprint, make_response, session, request
 from time import time
+import smtplib
+from email.mime.text import MIMEText
+from email.header import Header
 
 from sql.model import db
 from sql.tables.t_user import t_user
-
 auth = Blueprint('auth', __name__)
 
 
@@ -17,7 +19,8 @@ def before_request():
 
 @auth.route('/signup', methods=['POST'])
 def signup():
-    return make_response('Login', 200)
+    username = request.get('username')
+    email = request.get('email')
 
 
 @auth.route('/signin', methods=['POST'])

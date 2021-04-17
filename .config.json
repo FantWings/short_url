@@ -1,8 +1,11 @@
 {
-  "use_mysql": false,
+  "sql_enable": false,
   "sql_hostname": "127.0.0.1",
   "sql_database": "",
   "sql_username": "",
   "sql_password": "",
-  "sql_port": "3306"
+  "sql_port": "3306",
+  "smtp_host":"smtp.exmail.qq.com",
+  "smtp_user":"noreply@xxxxx.com",
+  "smtp_pass":"xxxxxxx"
 }
