@@ -1,34 +1,30 @@
-import json
-import os
+from os import path, getenv, urandom
 from lib.log import msg
 from datetime import timedelta
 
-base_dir = os.path.abspath(os.path.dirname(__file__))
-# 从config.json读取数据库配置
-config = json.load(open('config.json'))
+base_dir = path.abspath(path.dirname(__file__))
 
 
 class Config(object):
     """
     FLASK配置发布函数
     """
-    if config.get('sql_enable'):
+    if getenv('SQL_MODE') == 'mysql':
         # 拼接SQL URI
         database_uri = "mysql://%s:%s@%s:%s/%s" % (
-            config['sql_username'],
-            config['sql_password'],
-            config['sql_hostname'],
-            config.get('sql_port', '3306'),
-            config['sql_database']
+            getenv('SQL_USER'),
+            getenv('SQL_PASS'),
+            getenv('SQL_HOST'),
+            getenv('SQL_PORT'),
+            getenv('SQL_BASE')
         )
         msg('服务端已配置MySQL，将使用MySQL作为存储介质。')
     else:
-        # 回退使用MYSQLITE
         database_uri = False
-        msg('服务端未配置MySQL，服务端将使用SQLite作为存储介质。')
+        msg('服务端未配置MySQL，服务端将使用默认的SQLite作为存储介质。')
 
     # SQLALCHEMY配置
-    SQLALCHEMY_DATABASE_URI = database_uri or 'sqlite:///' + os.path.join(
+    SQLALCHEMY_DATABASE_URI = database_uri or 'sqlite:///' + path.join(
         base_dir, 'sqlite.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
@@ -37,15 +33,7 @@ class Config(object):
     JSON_AS_ASCII = False
 
     # 设置SESSION安全密钥
-    SECRET_KEY = os.urandom(24)
+    SECRET_KEY = urandom(24)
 
     # 设置SESSION有效期
     PERMANENT_SESSION_LIFETIME = timedelta(days=31)
-
-
-smtp = {
-    'host': config.get('smtp_host'),
-    'port': config.get('smtp_port'),
-    'user': config.get('smtp_user'),
-    'pass': config.get('smtp_pass'),
-}

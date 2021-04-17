@@ -33,7 +33,7 @@ def url_router(params):
                 url_id=params,
                 ip_addr=request.remote_addr,
                 ua=request.headers.get('User-Agent'),
-                referer=request.referrer,
+                referer=request.headers.get('Referer'),
             )
         )
 
