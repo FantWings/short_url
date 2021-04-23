@@ -27,7 +27,7 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = database_uri or 'sqlite:///' + path.join(
         base_dir, 'sqlite.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ECHO = False
+    SQLALCHEMY_ECHO = True
 
     # 禁用ASCII编码
     JSON_AS_ASCII = False

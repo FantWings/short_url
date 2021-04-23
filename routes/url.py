@@ -1,27 +1,27 @@
 from flask import Blueprint, make_response, request, session
-from datetime import datetime, timedelta
 import random
 
-from api.response import response
+from lib.interface import response
 
 from sql.model import db
 from sql.tables.t_url import t_url
-from sql.tables.t_log import t_log
-from sql.tables.t_user import t_user
 
-api = Blueprint('api', __name__)
+url = Blueprint('url', __name__)
 
 
-@api.route('/url/add', methods=['POST'])
+@url.route('/get', methods=['GET'])
+def get_urls():
+    userid = session.get('uid')
+    results = t_url.query.filter_by(owner_id=userid).all()
+    make_response(response(data=results), 200)
+
+
+@url.route('/add', methods=['POST'])
 def add_url():
-    userid = session.get('token')
+    userid = session.get('uid')
     client_data = request.get_json()
     if userid is None:
-        new_url = t_url(
-            short_url=random(),
-            original_url=client_data.get('url'),
-            vaild_time=datetime.now + timedelta(days=1),
-        )
+        make_response(response(msg="该操作需要登录", code=401), 200)
 
     if userid:
         new_url = t_url(
@@ -34,10 +34,13 @@ def add_url():
     db.seesion.commit()
 
 
-@api.route('/url/delete', methods=['DELETE'])
+@url.route('/delete', methods=['DELETE'])
 def del_url():
-    userid = session.get('token')
+    userid = session.get('uid')
     if userid is None:
-        make_response(response(False, msg="该操作需要登录", code=401), 200)
+        make_response(response(msg="该操作需要登录", code=401), 200)
     else:
-        todo
+        results = t_url.query.get(request.args.get('urlId'))
+        results.status = -1
+        db.session.commit()
+        return make_response(response(msg="操作成功"), 200)

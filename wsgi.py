@@ -5,7 +5,7 @@ from config import Config
 from sql.model import db
 from routes.index import index
 # from routes.api import api
-# from routes.auth import auth
+from routes.auth import auth
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -17,7 +17,7 @@ with app.app_context():
 CORS(app)
 app.register_blueprint(blueprint=index, url_prefix='/')
 # app.register_blueprint(blueprint=api, url_prefix='/api')
-# app.register_blueprint(blueprint=auth, url_prefix='/auth')
+app.register_blueprint(blueprint=auth, url_prefix='/auth')
 
 if __name__ == "__main__":
     app.run()

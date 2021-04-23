@@ -15,7 +15,7 @@ index = Blueprint('index', __name__)
 def url_router(params):
     results = t_url.query.filter_by(short_url=params).first()
     if results is None:
-        return make_response("链接不存在！", 200)
+        return make_response("链接不存在！", 404)
     else:
         user = t_user.query.get(results.owner_id)
         vip = int(mktime(user.vip_vaild_time.timetuple())) > time()

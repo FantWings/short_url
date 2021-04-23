@@ -11,7 +11,11 @@ ENV SQL_MODE "sqlite" \
     SQL_PASS "" \
     SQL_HOST "" \
     SQL_PORT "" \
-    SQL_BASE "" 
+    SQL_BASE "" \
+    SMTP_USERNAME "" \
+    SMTP_PASSWORD "" \
+    SMTP_HOST "" \
+    SMTP_PORT "465" 
 
 EXPOSE 9090
 
