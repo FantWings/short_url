@@ -6,14 +6,17 @@ from email.mime.text import MIMEText
 # from email.mime.base import MIMEBase
 # from email.mime.application import MIMEApplication
 from email.header import Header
-from os import getenv
+
+from config import Config
+
+config = Config()
 
 
 def sendmail(body, sendto, subject, sender, replyto=''):
-    username = getenv('SMTP_USERNAME')
-    password = getenv('SMTP_PASSWORD')
-    host = getenv('SMTP_HOST')
-    port = getenv('SMTP_PORT')
+    username = config.config_get('smtp', 'user')
+    password = config.config_get('smtp', 'pass')
+    host = config.config_get('smtp', 'host')
+    port = config.config_get('smtp', 'port')
 
     # 构建alternative结构
     msg = MIMEMultipart('alternative')

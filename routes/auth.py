@@ -1,6 +1,6 @@
 from flask import Blueprint, make_response, session, request
 from hashlib import md5
-
+from config import Config
 
 from sql.model import db
 from sql.tables.t_user import t_user
@@ -8,6 +8,7 @@ from lib.interface import response
 from lib.smtp import sendmail
 
 auth = Blueprint('auth', __name__)
+config = Config()
 
 
 @auth.before_app_first_request
@@ -39,13 +40,20 @@ def sendVerifyMail():
     email = request.args.get('email')
     results = t_user.query.filter_by(email=email).first()
     if results is None:
-        response(msg='账户不存在！', status=1)
+        return response(msg='账户不存在！', status=1)
+    if results.active:
+        return response(msg='账户已经激活过了！', status=1)
     else:
+        http_mode = config.config_get('http', 'httpmode')
+        host_name = config.config_get('http', 'hostname')
+        http_port = config.config_get('http', 'httpport')
+        sender_name = config.config_get('site', 'name')
         results = sendmail(
             '''
             您正在尝试注册账号，请点击链接来完成注册：
-            https://localhost:5000/auth/verfiyEmail?email=%s&token=%s
-            ''' % (email, results.token), email, '账户注册', '福瑞文化')
+            %s://%s:%s/auth/verifyEmail?email=%s&token=%s
+            ''' % (http_mode, host_name, http_port,
+                   email, results.token), email, '账户注册', sender_name)
         return response(msg=results)
 
 
