@@ -1,6 +1,8 @@
 from sql.model import db
 from sqlalchemy.sql import func
 
+from lib.gen import genToken, genUuid
+
 
 class t_user(db.Model):
     __tablename__ = "t_user"
@@ -8,6 +10,7 @@ class t_user(db.Model):
     uuid = db.Column(
         db.String(64),
         nullable=False,
+        default=genUuid(),
         comment='用户UUID'
     )
     avatar = db.Column(
@@ -26,7 +29,8 @@ class t_user(db.Model):
     )
     phone = db.Column(
         db.String(11),
-        nullable=False,
+        # 手机号验证功能没做完，暂时注释必填字段
+        # nullable=False,
         comment='手机号',
         unique=True
     )
@@ -58,4 +62,15 @@ class t_user(db.Model):
         nullable=False,
         server_default=func.now(),
         comment='会员过期时间'
+    )
+    active = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=False,
+        comment='账户状态'
+    )
+    token = db.Column(
+        db.String(32),
+        default=genToken(32),
+        comment='临时token'
     )

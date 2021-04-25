@@ -1,33 +1,55 @@
-from os import path, getenv, urandom
-from lib.log import msg
+from os import path, urandom
 from datetime import timedelta
+import configparser
 
 base_dir = path.abspath(path.dirname(__file__))
 
 
-class Config(object):
+class Config():
+    def __init__(self):
+        self.config = configparser.ConfigParser()
+        self.config.read('config.ini', encoding='utf-8')
+
+    def config_get(self, section, item):
+        '''
+        从INI获取配置字段
+        --------------------
+        section = INI stction名称
+        item = 配置字段key
+        '''
+        return self.config.get(section, item)
+
+    def config_items(self, section):
+        '''
+        从INI获取所有键值对
+        --------------------
+        section = INI stction名称
+        '''
+        return self.config.items(section)
+
+
+class Sql(object):
     """
     FLASK配置发布函数
     """
-    if getenv('SQL_MODE') == 'mysql':
+    config = Config()
+    if config.config_get('db', 'mode') == 'mysql':
         # 拼接SQL URI
         database_uri = "mysql://%s:%s@%s:%s/%s" % (
-            getenv('SQL_USER'),
-            getenv('SQL_PASS'),
-            getenv('SQL_HOST'),
-            getenv('SQL_PORT'),
-            getenv('SQL_BASE')
+            config.config_get('db', 'user'),
+            config.config_get('db', 'pass'),
+            config.config_get('db', 'host'),
+            config.config_get('db', 'port'),
+            config.config_get('db', 'base'),
         )
-        msg('服务端已配置MySQL，将使用MySQL作为存储介质。')
     else:
         database_uri = False
-        msg('服务端未配置MySQL，服务端将使用默认的SQLite作为存储介质。')
 
     # SQLALCHEMY配置
     SQLALCHEMY_DATABASE_URI = database_uri or 'sqlite:///' + path.join(
         base_dir, 'sqlite.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ECHO = False
+    SQLALCHEMY_ECHO = True
 
     # 禁用ASCII编码
     JSON_AS_ASCII = False
