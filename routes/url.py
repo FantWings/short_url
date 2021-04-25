@@ -1,42 +1,65 @@
 from flask import Blueprint, make_response, request, session
-import random
 
 from lib.interface import response
 
 from sql.model import db
 from sql.tables.t_url import t_url
+from lib.gen import genToken
 
 url = Blueprint('url', __name__)
 
 
-@url.route('/get', methods=['GET'])
+@url.before_app_request
+def get_userid():
+    global userid
+    userid = session.get('uid', default=False)
+
+
+@url.route('/getLists', methods=['GET'])
 def get_urls():
-    userid = session.get('uid')
-    results = t_url.query.filter_by(owner_id=userid).all()
-    return make_response(response(data=results), 200)
+    if userid:
+        results = t_url.query.filter_by(owner_id=userid).all()
+        data = []
+        for result in results:
+            data.append(
+                {
+                    'url_id': result.id,
+                    'short_url': result.short_url,
+                    'original_url': result.original_url,
+                    'vaild_time': result.vaild_time
+                }
+            )
+        return make_response(response(data=data), 200)
+    else:
+        return make_response(response(msg="该操作需要登录", status=1), 200)
 
 
 @url.route('/add', methods=['POST'])
 def add_url():
-    if session.get('uid', default=False):
+    if userid:
         client_data = request.get_json()
-        new_url = t_url(
-            short_url=random(),
-            original_url=client_data.get('url'),
-            owner_id=session.get('uid'),
-        )
-        db.session.add(new_url)
-        db.seesion.commit()
+        url = client_data.get('url')
+        if t_url.query.filter_by(original_url=url).first() is None:
+            new_url = t_url(
+                short_url=genToken(8),
+                original_url=url,
+                owner_id=userid,
+            )
+            db.session.add(new_url)
+            db.session.commit()
+            return make_response(response(msg="地址添加成功"), 200)
+        else:
+            return make_response(response(msg="地址已经存在", status=1), 200)
     else:
-        return make_response(response(msg="该操作需要登录", code=401), 200)
+        return make_response(response(msg="该操作需要登录", status=1), 200)
 
 
 @url.route('/delete', methods=['DELETE'])
 def del_url():
-    if session.get('uid', default=False):
+    if userid:
         results = t_url.query.get(request.args.get('urlId'))
         results.status = -1
         db.session.commit()
         return make_response(response(msg="操作成功"), 200)
     else:
-        return make_response(response(msg="该操作需要登录", code=401), 200)
+        return make_response(response(msg="该操作需要登录", code=1), 200)

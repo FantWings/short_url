@@ -1,21 +1,7 @@
 from sql.model import db
 from sqlalchemy.sql import func
 
-import uuid
-from random import Random
-
-
-def genToken(length):
-    token = ''
-    chars = 'abcdefghijklnmopqrstuvwxyz1234567890'
-    temp = len(chars) - 1
-    for i in range(length):
-        token += chars[Random().randint(0, temp)]
-    return token
-
-
-def genUuid():
-    return uuid.uuid1().hex
+from lib.gen import genToken, genUuid
 
 
 class t_user(db.Model):
