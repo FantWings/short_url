@@ -1,7 +1,6 @@
 from flask import Blueprint, make_response, session, request
-from hashlib import md5
-from config import Config
 
+from config import Config
 from sql.model import db
 from sql.tables.t_user import t_user
 from lib.interface import response
@@ -9,6 +8,12 @@ from lib.smtp import sendmail
 
 auth = Blueprint('auth', __name__)
 config = Config()
+
+
+def md5(password):
+    from hashlib import md5
+    salted = '%sandgoodstuff' % (password)
+    return md5(salted.encode('utf-8')).hexdigest()
 
 
 @auth.before_app_first_request
@@ -23,11 +28,9 @@ def setSession():
 def signup():
     submit = request.get_json()
     email = submit.get('email')
-    password = md5().update(submit.get('passwd').
-                            encode(encoding='utf-8'))
     db.session.add(
         t_user(
-            password=password,
+            password=md5(submit.get('passwd')),
             email=email
         )
     )
@@ -75,11 +78,8 @@ def verifyEmail():
 def signIn():
     submit = request.get_json()
     email = submit.get('email')
-    password = md5().update(submit.get('passwd').
-                            encode(encoding='utf-8'))
-
     results = t_user.query.filter_by(email=email).first()
-    if password == results.password:
+    if md5(submit.get('passwd')) == results.password:
         session['uid'] = results.id
         return make_response(response(msg="登录成功"), 200)
     else:
