@@ -77,9 +77,12 @@ def verifyEmail():
 @auth.route('/signIn', methods=['POST'])
 def signIn():
     submit = request.get_json()
+    print(submit)
     email = submit.get('email')
     results = t_user.query.filter_by(email=email).first()
-    if md5(submit.get('passwd')) == results.password:
+    if results is None:
+        return make_response(response(msg="用户不存在", status=1), 200)
+    if md5(submit.get('password')) == results.password:
         session['uid'] = results.id
         return make_response(response(msg="登录成功"), 200)
     else:
