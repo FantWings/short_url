@@ -1,13 +1,11 @@
-from flask import Blueprint, make_response, session, request
+from flask import Blueprint, make_response, session, request, current_app
 
-from config import Config
 from sql.model import db
 from sql.tables.t_user import t_user
 from lib.interface import response
 from lib.smtp import sendmail
 
 auth = Blueprint('auth', __name__)
-config = Config()
 
 
 def md5(password):
@@ -47,16 +45,16 @@ def sendVerifyMail():
     if results.active:
         return response(msg='账户已经激活过了！', status=1)
     else:
-        http_mode = config.config_get('http', 'httpmode')
-        host_name = config.config_get('http', 'hostname')
-        http_port = config.config_get('http', 'httpport')
-        sender_name = config.config_get('site', 'name')
+        http_mode = current_app.config.get('http_mode')
+        host_name = current_app.config.get('host_name')
+        http_port = current_app.config.get('http_port')
+        site_name = current_app.config.get('site_name')
         results = sendmail(
             '''
             您正在尝试注册账号，请点击链接来完成注册：
             %s://%s:%s/auth/verifyEmail?email=%s&token=%s
             ''' % (http_mode, host_name, http_port,
-                   email, results.token), email, '账户注册', sender_name)
+                   email, results.token), email, '账户注册', site_name)
         return response(msg=results)
 
 

@@ -6,17 +6,14 @@ from email.mime.text import MIMEText
 # from email.mime.base import MIMEBase
 # from email.mime.application import MIMEApplication
 from email.header import Header
-
-from config import Config
-
-config = Config()
+from flask import current_app
 
 
 def sendmail(body, sendto, subject, sender, replyto=''):
-    username = config.config_get('smtp', 'user')
-    password = config.config_get('smtp', 'pass')
-    host = config.config_get('smtp', 'host')
-    port = config.config_get('smtp', 'port')
+    username = current_app.config.get('smtp_username')
+    password = current_app.config.get('smtp_password')
+    host = current_app.config.get('smtp_host')
+    port = current_app.config.get('smtp_port')
 
     # 构建alternative结构
     msg = MIMEMultipart('alternative')
