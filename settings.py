@@ -37,6 +37,12 @@ class FlaskConfig(object):
     else:
         database_uri = False
 
+    """Redis配置"""
+    redis_host = ini.get('redis', 'host')
+    redis_port = ini.get('redis', 'port')
+    redis_db = ini.get('redis', 'db')
+    redis_expire = ini.get('redis', 'expire')
+
     """SQLALCHEMY配置"""
     SQLALCHEMY_DATABASE_URI = database_uri or 'sqlite:///' + path.join(
         base_dir, 'sqlite.db')
