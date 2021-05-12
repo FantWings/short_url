@@ -13,16 +13,16 @@ class FlaskConfig(object):
     PERMANENT_SESSION_LIFETIME = timedelta(days=31)
 
     """ SMTP配置 """
-    smtp_username = ini.get('smtp', 'user')
-    smtp_password = ini.get('smtp', 'pass')
-    smtp_host = ini.get('smtp', 'host')
-    smtp_port = ini.get('smtp', 'port')
+    SMTP_USER = ini.get('smtp', 'user')
+    SMTP_PASS = ini.get('smtp', 'pass')
+    SMTP_HOST = ini.get('smtp', 'host')
+    SMTP_PORT = ini.get('smtp', 'port')
 
     """站点设置"""
-    http_mode = ini.get('http', 'httpmode')
-    host_name = ini.get('http', 'hostname')
-    http_port = ini.get('http', 'httpport')
-    site_name = ini.get('site', 'name')
+    HTTP_MODE = ini.get('http', 'httpmode')
+    HOST_NAME = ini.get('http', 'hostname')
+    HTTP_PORT = ini.get('http', 'httpport')
+    SITE_NAME = ini.get('site', 'name')
 
     """数据库配置"""
     if ini.get('db', 'mode') == 'mysql':
@@ -36,16 +36,14 @@ class FlaskConfig(object):
         )
     else:
         database_uri = False
-
-    """Redis配置"""
-    redis_host = ini.get('redis', 'host')
-    redis_port = ini.get('redis', 'port')
-    redis_db = ini.get('redis', 'db')
-    redis_expire = ini.get('redis', 'expire')
-
-    """SQLALCHEMY配置"""
     SQLALCHEMY_DATABASE_URI = database_uri or 'sqlite:///' + path.join(
         base_dir, 'sqlite.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
     JSON_AS_ASCII = False
+
+    """Redis配置"""
+    REDIS_HOST = ini.get('redis', 'host')
+    REDIS_PORT = ini.get('redis', 'port')
+    REDIS_DB = ini.get('redis', 'db')
+    REDIS_EXPIRE = ini.get('redis', 'expire')

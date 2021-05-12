@@ -10,10 +10,10 @@ from flask import current_app
 
 
 def sendmail(body, sendto, subject, sender, replyto=''):
-    username = current_app.config.get('smtp_username')
-    password = current_app.config.get('smtp_password')
-    host = current_app.config.get('smtp_host')
-    port = current_app.config.get('smtp_port')
+    username = current_app.config.get('SMTP_USER')
+    password = current_app.config.get('SMTP_PASS')
+    host = current_app.config.get('SMTP_HOST')
+    port = current_app.config.get('SMTP_PORT')
 
     # 构建alternative结构
     msg = MIMEMultipart('alternative')

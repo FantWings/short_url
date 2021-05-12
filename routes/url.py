@@ -1,10 +1,10 @@
-from flask import Blueprint, make_response, request, session
+from flask import Blueprint, make_response, request
 
 from lib.interface import response
-
 from sql.model import db
 from sql.tables.t_url import t_url
 from lib.gen import genToken
+from lib.redis import Redis
 
 url = Blueprint('url', __name__)
 
@@ -12,7 +12,8 @@ url = Blueprint('url', __name__)
 @url.before_app_request
 def get_userid():
     global userid
-    userid = session.get('uid', default=False)
+    userid = Redis.read(
+        'session_{}'.format(request.headers.get('token', default=0)))
 
 
 @url.route('/getLists', methods=['GET'])

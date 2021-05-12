@@ -1,7 +1,7 @@
 from sql.model import db
 from sqlalchemy.sql import func
 
-from lib.gen import genToken, genUuid
+from lib.gen import genUuid
 
 
 class t_user(db.Model):
@@ -68,9 +68,4 @@ class t_user(db.Model):
         nullable=False,
         default=False,
         comment='账户状态'
-    )
-    token = db.Column(
-        db.String(32),
-        default=genToken(32),
-        comment='临时token'
     )
