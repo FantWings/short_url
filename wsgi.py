@@ -1,14 +1,14 @@
 from flask import Flask
 from flask_cors import CORS
 
-from config import Sql
+from settings import FlaskConfig
 from sql.model import db
 from routes.index import index
 from routes.url import url
 from routes.auth import auth
 
 app = Flask(__name__)
-app.config.from_object(Sql)
+app.config.from_object(FlaskConfig)
 
 with app.app_context():
     db.init_app(app)
