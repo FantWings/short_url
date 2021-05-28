@@ -1,4 +1,4 @@
-def response(data="", msg="", status=0):
+def response(data="", msg="", code=0):
     """
     返回数据处理函数
     data:           回调数据（Json）
@@ -8,6 +8,6 @@ def response(data="", msg="", status=0):
     response = {
         'msg': msg,
         'data': data,
-        'code': status
+        'code': code
     }
     return response
