@@ -6,6 +6,7 @@ from sql.model import db
 from routes.index import index
 from routes.url import url
 from routes.auth import auth
+from routes.user import user
 
 app = Flask(__name__)
 app.config.from_object(FlaskConfig)
@@ -18,6 +19,7 @@ CORS(app)
 app.register_blueprint(blueprint=index, url_prefix='/')
 app.register_blueprint(blueprint=url, url_prefix='/url')
 app.register_blueprint(blueprint=auth, url_prefix='/auth')
+app.register_blueprint(blueprint=user, url_prefix='/user')
 
 if __name__ == "__main__":
     app.run()
