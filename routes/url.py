@@ -24,12 +24,14 @@ def get_urls():
     results = t_url.query.filter_by(owner_id=userid).all()
     data = []
     for result in results:
-        data.append({
-            'url_id': result.id,
-            'short_url': result.short_url,
-            'original_url': result.original_url,
-            'vaild_time': result.vaild_time
-        })
+        if result.status >= 0:
+            data.append({
+                'url_id': result.id,
+                'short_url': result.short_url,
+                'original_url': result.original_url,
+                'vaild_time': result.vaild_time,
+                'status': result.status
+            })
     return make_response(response(data=data), 200)
 
 
