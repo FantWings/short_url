@@ -12,10 +12,14 @@ user = Blueprint('user', __name__)
 def getUserId():
     global token
     global userid
+
     token = request.headers.get('token', default=False)
     if not token:
-        return make_response(response(msg="需要登录", code=1), 200)
+        return make_response(response(msg="需要登录", code=10), 200)
+
     userid = Redis.read('session_{}'.format(token))
+    if not userid:
+        return make_response(response(msg="登录态过期，请刷新页面", code=10), 200)
 
 
 @user.route('/userInfo', methods=['GET'])
