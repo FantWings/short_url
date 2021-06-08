@@ -1,5 +1,6 @@
 import time
 from flask import Blueprint, make_response, request
+from sqlalchemy import func
 
 from lib.interface import response
 from sql.model import db
@@ -38,7 +39,7 @@ def get_urls():
             'original_url':
             result.original_url,
             'vaild_time':
-            int(time.mktime(result.vaild_time.timetuple())) * 1000,
+            int(time.mktime(result.vaild_time_end.timetuple())) * 1000,
             'status':
             result.status
         })
@@ -84,8 +85,18 @@ def update_url():
         method = request.args.get('method')
         if method == 'date':
             client_data = request.get_json()
-            print(client_data.starttime)
-            print(client_data.endtime)
+            if client_data["permemt"]:
+                results.vaild_time_start = '2000-01-01'
+                results.vaild_time_end = '9999-01-01'
+            else:
+                print(client_data.get('starttime'))
+                print(client_data.get('endtime'))
+                results.vaild_time_start = time.strftime(
+                    "%Y-%m-%d %H:%M:%S",
+                    time.localtime(client_data.get('starttime')))
+                results.vaild_time_end = time.strftime(
+                    "%Y-%m-%d %H:%M:%S",
+                    time.localtime(client_data.get('endtime')))
 
     db.session.commit()
     return make_response(response(msg="操作成功"), 200)

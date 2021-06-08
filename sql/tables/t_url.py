@@ -16,7 +16,11 @@ class t_url(db.Model):
                        default=0,
                        comment='短链状态')
     owner_id = db.Column(db.Integer, comment='所有者', nullable=False)
-    vaild_time = db.Column(db.DateTime,
-                           comment='有效期',
-                           default='9999-01-01',
-                           nullable=False)
+    vaild_time_start = db.Column(db.DateTime,
+                                 comment='有效期开始时间',
+                                 default='2000-01-01',
+                                 nullable=False)
+    vaild_time_end = db.Column(db.DateTime,
+                               comment='有效期截止时间',
+                               default='9999-01-01',
+                               nullable=False)
