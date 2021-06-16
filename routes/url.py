@@ -31,6 +31,8 @@ def get_urls():
                                  t_url.status >= 0).all()
     data = []
     for result in results:
+        isPerment = True if int(time.mktime(result.vaild_time_end.timetuple())
+                                ) * 1000 == 253370750400000 else False
         data.append({
             'url_id':
             result.id,
@@ -38,8 +40,12 @@ def get_urls():
             result.short_url,
             'original_url':
             result.original_url,
-            'vaild_time':
+            'starttime':
+            int(time.mktime(result.vaild_time_start.timetuple())) * 1000,
+            'endtime':
             int(time.mktime(result.vaild_time_end.timetuple())) * 1000,
+            'permemt':
+            isPerment,
             'status':
             result.status
         })
@@ -89,8 +95,6 @@ def update_url():
                 results.vaild_time_start = '2000-01-01'
                 results.vaild_time_end = '9999-01-01'
             else:
-                print(client_data.get('starttime'))
-                print(client_data.get('endtime'))
                 results.vaild_time_start = time.strftime(
                     "%Y-%m-%d %H:%M:%S",
                     time.localtime(client_data.get('starttime')))
